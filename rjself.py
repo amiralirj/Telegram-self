@@ -11,9 +11,9 @@ import wikipedia
 from requests import get
 
 ems = ['🦁', '🐯', '🌼', '🌗', '🌓', '🪐', '💫', '⭐️', '✨', '⚡️', '🔥', '🌈', '☃️', '❄️', '🍔', '🍕', '🍓', '🍉', '🍟', '🧁', '🍰',  '🦊', '🦄', '🐝', '🐺', '🦋', '🐞', '🐳', '🐬', '🐼', '🦚', '🎄', '🌲', '🍄', '🍁', '🌷', '🌹', '🌺', '🌸','🍭', '🍬', '🍫', '🍿', '🍩', '🍪', '🥂', '🍸', '🍹', '🧉', '🍾', '⚽️', '🏀', '🏈', '⚾️', '🥎', '🎾', '🎖', '🎗', '🥁', '🎸', '🎺', '🎷', '🏎', '🚀', '✈️', '🚁', '🛸', '🏰', '🗼', '🎡', '🛩', '📱', '💻', '🖥', '💰', '🧨', '💣', '🪓', '💎', '⚱️', '🔮', '🩸', '🦠', '🛎', '🧸', '🎉', '💌', '📯', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '❣️', '💕', '💞', '💝', '⚜️', '🔱', '📣', '♥️', '😍', '🥰', '🥳', '🤩', '🤪', '👾', '😻', '💋', '👑', '💍', '🎩']
-love_Emj=['♡','♥','💕','❤','😘','🪐', '💫', '⭐️', '✨', '⚡️', '🔥', '🌈','🍕', '🍓', '🍉'  ,'❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '❣️', '💕', '💞', '💝','♥️', '😍', '🥰',]
+love_Emj=['♡','♥','💕','❤','😘','🪐', '💫', '⭐️', '✨', '⚡️', '🔥', '🌈','🍕', '🍓', '🍉'  ,'❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '❣️', '💕', '💞', '💝','♥️', '😍', '🥰']
 #@amiralirj_channel www.github.com\amiralirj
-helptxt='''www.github.com/amiralirj | @amiralirj_channel
+helptxt='''www.github.com/amiralirj | @amiralirj_official
 rj-self help commands:
             ** Auto Answering ** 
 ``` /setanswer ```☩ hello | hi 
@@ -63,9 +63,9 @@ rj-self help commands:
 ``` /love ``` [on/off]☩ turn sending message for selected users
 ``` loves ```☩ list of selected users
 ``` cleanloves ```☩ clean all of selected users
-``` /left ``` [on/off]☩ leave from new groups you has added by unsafe users
-                             
+``` /left ``` [on/off]☩ leave from new groups you has added by unsafe users                           
 ``` /login ``` [on/off]☩ no body can login into your account if you turn it on
+``` /offline ``` [on\off] [text optinal]
 '''
 
 api_id =2586462 #your api id 
@@ -78,6 +78,7 @@ with bot:
 
 
 # Do not edit this part -------------------------------------------------
+Has_Sended=list()
 safe_list=list()
 Answer_Dic=dict()
 is_tagging =dict()
@@ -88,13 +89,14 @@ Love_dic=dict()
 safe_turn=0
 safe_blk=0
 action_type=0
-
+Offline_text=''
 
 
 Anti_Login=False
 left_gaps=False
 Love_Break_Variable=False
 New_PV=False
+offline=False
 
 
 
@@ -128,7 +130,9 @@ def answer(c,m):
     global Answer_Dic
     for i in Answer_Dic:
         if str(m.text) in str(i).strip() or str(m.text)==str(i).strip():
-            m.reply_text(Answer_Dic[i])
+            x=m.reply_text(Answer_Dic[i])
+            Has_Sended.append(x.message_id)
+    
 
 @bot.on_message( filters.me & filters.command(['setanswer']))
 def Set_Answer(c,m):
@@ -167,7 +171,7 @@ def wikipedia_search_fa(c,m):
         result = wikipedia.page(text)
         m.edit_text(result.summary[0:1000])
     except:
-        m.edit_text('صفحه ای با این مضنون پیدا نشد  ')
+        m.edit_text('صفحه ای با این مضمون پیدا نشد  ')
 
 @bot.on_message( filters.me & filters.command(['wiki']))
 def wikipedia_search(c,m):
@@ -227,7 +231,7 @@ def Love_Fun(c,m):
 
 
 
-@bot.on_message( filters.me & filters.regex('(?i)^safe'))
+@bot.on_message( filters.me & ~filters.regex('(?i)^safelist') & filters.regex('(?i)^safe'))
 def safe(c,m):
     if m.reply_to_message :
         if m.reply_to_message.from_user.id not in safe_list:
@@ -329,10 +333,9 @@ def delete_acount(c,m):
 
 @bot.on_message( filters.me & filters.command(['leavingmembers']))
 def Leaving_people(c,m):
-    Leaving_File= bot.get_chat_event_log(chat_id=m.chat.id,filters =ChatEventFilter(leaving_members=True))
     send_file=''
     num=1
-    for i in Leaving_File:
+    for i in bot.get_chat_event_log(chat_id=message.chat.id ,filters =ChatEventFilter(leaving_members=True)):
         try:
             send_file+=f'{num}-{i.user.mention} ``` {i.user.id} ``` '
             num+=1
@@ -421,9 +424,38 @@ def New_Users_Message(c,m):
 
 
 
+
+
+
+
+
+@bot.on_message( filters.me & filters.command(['offline']))
+def offline_on(c,m):
+    global offline,Offline_text
+    Offline_Cmd=str(m.command[1])
+    if Offline_Cmd=='on' or Offline_Cmd=='On':
+        Offline_text=m.text[11:]
+        offline=True
+        m.edit_text('offline answering has enabeled with {} text')
+    if Offline_Cmd=='off'  or Offline_Cmd=='Off':
+        offline=False
+        m.edit_text('offline answering has disabeled  for new users')
+    
+
+
+    
+
+
+
+
 @bot.on_message(filters.me & filters.regex('(?i)^help$'))
 def help(c,m):
     m.edit_text(helptxt)
+
+
+
+
+
 
 @bot.on_message( filters.me & (filters.regex('(?i)^block$')))
 def Block(c,m):
@@ -576,6 +608,7 @@ def add_istagging(chat_id):
     global is_tagging
     if chat_id not in is_tagging:
         is_tagging.update({chat_id: False})
+
 
 
 @bot.on_message( filters.me & filters.command(['tag']) & filters.group)
@@ -773,9 +806,11 @@ def LoVe_Func(c,m):
                         for f in emojis:
                             emoji+=f
                         if len(now.hour)==1:
-                            bot.send_message(i,text=f'{Dic_Imutable_Love[i]} | 0{now.hour}:0{now.minute} | {emoji}')
+                            Id=bot.send_message(i,text=f'{Dic_Imutable_Love[i]} | 0{now.hour}:0{now.minute} | {emoji}')
+                            Has_Sended.append(Id.from_user.id)
                         else:
-                            bot.send_message(i,text=f'{Dic_Imutable_Love[i]} | {now.hour}:{now.minute} | {emoji}')
+                            Id=bot.send_message(i,text=f'{Dic_Imutable_Love[i]} | {now.hour}:{now.minute} | {emoji}')
+                            Has_Sended.append(Id.from_user.id)
                     time.sleep(60)  
 
     if Love_Cmnd=='off'  or Love_Cmnd=='Off':
@@ -804,7 +839,8 @@ def New_Gaps(c,m):
             for user in m.new_chat_members:
                 if user.id==admin:
                     chat_id=m.chat.id
-                    m.reply_text('bot cant recognize this chat so ... bye bye')
+                    x=m.reply_text('bot cant recognize this chat so ... bye bye')
+                    Has_Sended.append(x.message_id)
                     bot.leave_chat(chat_id)
                     break
 
@@ -816,12 +852,21 @@ def New_Msg(c,m):
 
 @bot.on_message(~filters.me & filters.private)
 def New_Private_MSG(c,m):
-    Msg_Id=m.message_id
-    
+    Msg_Id= bot.get_history_count(m.chat.id)
+    Unread_Count=0
+    Mentions_Count=0
+    Unread_Users_Count=0
+    for i in bot.iter_dialogs(offset_date=0):
+        Mentions_Count+=int(i.unread_mentions_count)
+        if i.type=='private' :
+            Unread_Count+=int(i.unread_message_count)
+            if i.unread_mark==True:
+                Unread_Users_Count+=1
+
     q=1
     if safe_blk==1:
         if New_PV==True:
-            if Msg_Id==1:
+            if Msg_Id<3:
                 bot.block_user(m.from_user.id)
                 q=0
 
@@ -833,7 +878,7 @@ def New_Private_MSG(c,m):
 
     if safe_turn==1:
         if New_PV==True:
-            if Msg_Id==1:
+            if Msg_Id<3:
                 id= bot.resolve_peer(m.from_user.id)
                 bot.send(DeleteHistory(max_id=0,peer=id,revoke=True))
                 q=0
@@ -845,7 +890,7 @@ def New_Private_MSG(c,m):
                 q=0
     elif safe_turn==2:
         if New_PV==True:
-            if Msg_Id==1:
+            if Msg_Id<3:
                 m.delete(True)
                 q=0
         else:
@@ -854,15 +899,27 @@ def New_Private_MSG(c,m):
                 q=0
     if q==1:
         answer(c,m)
+        if offline==True:
+            if m.from_user.id not in Has_Sended:
+                I=m.ryply_text(f'{Offline_text} \n| i have {Unread_Count} new messages & {Unread_Users_Count} users waiting for my respond & {Mentions_Count} mentions  so wait for my respond... ')
+                Has_Sended.append(I.message_id)
 
 
 @bot.on_message(filters.me & filters.text)
 def My_Msg(c,m):
+    global Has_Sended
+    if m.message_id not in Has_Sended:
+        Has_Sended=[]
     if action_type==1:
         m.edit_text(f'``` {m.text} ```')
     elif action_type==2:
         m.edit_text(f'** {m.text} **')
 
+@bot.on_message(filters.me )
+def My_All_Msg(c,m):
+    global Has_Sended
+    if m.message_id not in Has_Sended:
+        Has_Sended=[]
 
 if __name__=='__main__':
     print(' Fallow For More .... www.github.com/amiralirj ')
