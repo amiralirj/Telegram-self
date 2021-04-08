@@ -518,15 +518,12 @@ def unban(c,m):
 
 @bot.on_message(filters.me & filters.command("onlines"))
 def online(c, m):
-    Onlines = 0
     Online_Usr=''
     gp = m.chat.id
-    for i in bot.iter_chat_members(gp):
-        if i.user.status == "online":
-            Online_Usr += f"|[{i.user.first_name}] {i.user.mention}\n"
-            Onlines+=1
-    bot.edit_message_text(m.chat.id, m.message_id, f"online members :\n {Online_Usr}\n Onlines ↬ |{(Onlines)}|**")
-
+    for member in bot.iter_chat_members(gp):
+        if member.user.status in ["online", "recently"]: # recently; If your account's last seen setting is set to No one/Only contacts.
+            Online_Usr += f"|[{member.user.first_name}] {member.user.mention}\n"
+    bot.edit_message_text(m.chat.id, m.message_id, f"online members :\n {Online_Usr}\n Onlines ↬ |{(len(Online_Usr.split('\n')))}|**")
 
 @bot.on_message(filters.me & filters.regex('(?i)^lock$'))
 def lock(c,m):
@@ -537,9 +534,6 @@ def lock(c,m):
 def unlock_command(c,m):
     bot.set_chat_permissions(m.chat.id, unmute_group)
     m.edit_text('group unlocked')
-
-
-
 
 @bot.on_message(filters.me & filters.regex('(?i)^userinfo'))
 def UserId(c,m):
