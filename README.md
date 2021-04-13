@@ -1,4 +1,17 @@
-# Telegram-self
-Management user-bot for telegram
-can do  particular ability's Change api-hash and api-id , Run & Enjoy 
-You can also use command [help] to see robot commands help
+# 🚀 Telegram-self
+> Management/Fun Userbot Based on [Pyrogram](https://pyrogram.org/) For Telegram
+
+> A lot of stuff are implemented, You can use [help] commands to see all available commands ✅
+
+## How To Install/Use 
+
+- ### Setting up files
+    - Clone or download the repository : `git clone https://github.com/iMat1n/Telegram-self.git`
+    - Edit `rjself.py`, Replace your ApiID/ApiHash [Get them from [Here](https://my.telegram.org/)]
+        - Line #72 : Api ID
+        - Line #73 : Api Hash
+
+- ### Installing requirements
+    - Install required packages using `pip install -U -r requirements.txt`
+    - Start The Bot : `python rjself.py`
+    - Enjoy !
