@@ -1,12 +1,10 @@
 from pyrogram import Client,filters
 from pyrogram.types import ChatPermissions,ChatEventFilter
-from pyrogram.raw.types import InputPeerUser
 from pyrogram.raw.functions.messages import DeleteHistory
 from pyrogram.raw.functions.account import DeleteAccount
 import time
 import random
 from datetime import datetime
-import json
 import wikipedia
 from requests import get
 
