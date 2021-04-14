@@ -1,12 +1,10 @@
 from pyrogram import Client,filters
 from pyrogram.types import ChatPermissions,ChatEventFilter
-from pyrogram.raw.types import InputPeerUser
 from pyrogram.raw.functions.messages import DeleteHistory
 from pyrogram.raw.functions.account import DeleteAccount
 import time
 import random
 from datetime import datetime
-import json
 import wikipedia
 from requests import get
 
@@ -68,6 +66,7 @@ rj-self help commands:
 ``` /offline ``` [on\off] [text optinal]
 '''
 
+#!-------------------------------- Client Setup
 api_id =2586462 #your api id 
 api_hash = '68542129131999986899b84a10a6170c'#your api hash
 bot = Client('amirairj-self', api_id, api_hash,workers=7)
@@ -76,29 +75,25 @@ with bot:
     me=bot.get_me().first_name
     bot.send_message('me',text=f'Hi \n welcome to the rjself bot \n ** DEV: @amiralirj_channel | @amiralirj_pv ** \n {helptxt} ')
 
+#!-------------------------------- 
 
-# Do not edit this part -------------------------------------------------
+#!-------------------------------- Settings Setup
 Has_Sended=list()
 safe_list=list()
 Answer_Dic=dict()
 is_tagging =dict()
 Love_dic=dict()
 
-
-
 safe_turn=0
 safe_blk=0
 action_type=0
 Offline_text=''
-
 
 Anti_Login=False
 left_gaps=False
 Love_Break_Variable=False
 New_PV=False
 offline=False
-
-
 
 mute_group = ChatPermissions(can_send_messages=False)
 unmute_group = ChatPermissions(
@@ -108,8 +103,7 @@ unmute_group = ChatPermissions(
     can_send_media_messages=True,
     can_send_polls=True,
     can_send_stickers=True)
-# ------------------------------------------------------------------
-
+#!-------------------------------- 
 
 
 @bot.on_message( filters.me & filters.command(['bot']))
