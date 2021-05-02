@@ -7,10 +7,10 @@ import random
 from datetime import datetime
 import wikipedia
 from requests import get
-
+import asyncio
 ems = ['🦁', '🐯', '🌼', '🌗', '🌓', '🪐', '💫', '⭐️', '✨', '⚡️', '🔥', '🌈', '☃️', '❄️', '🍔', '🍕', '🍓', '🍉', '🍟', '🧁', '🍰',  '🦊', '🦄', '🐝', '🐺', '🦋', '🐞', '🐳', '🐬', '🐼', '🦚', '🎄', '🌲', '🍄', '🍁', '🌷', '🌹', '🌺', '🌸','🍭', '🍬', '🍫', '🍿', '🍩', '🍪', '🥂', '🍸', '🍹', '🧉', '🍾', '⚽️', '🏀', '🏈', '⚾️', '🥎', '🎾', '🎖', '🎗', '🥁', '🎸', '🎺', '🎷', '🏎', '🚀', '✈️', '🚁', '🛸', '🏰', '🗼', '🎡', '🛩', '📱', '💻', '🖥', '💰', '🧨', '💣', '🪓', '💎', '⚱️', '🔮', '🩸', '🦠', '🛎', '🧸', '🎉', '💌', '📯', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '❣️', '💕', '💞', '💝', '⚜️', '🔱', '📣', '♥️', '😍', '🥰', '🥳', '🤩', '🤪', '👾', '😻', '💋', '👑', '💍', '🎩']
 love_Emj=['♡','♥','💕','❤','😘','🪐', '💫', '⭐️', '✨', '⚡️', '🔥', '🌈','🍕', '🍓', '🍉'  ,'❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '❣️', '💕', '💞', '💝','♥️', '😍', '🥰']
-#@amiralirj_channel www.github.com\amiralirj
+#@amiralirj_official www.github.com\amiralirj
 helptxt='''www.github.com/amiralirj | @amiralirj_official
 rj-self help commands:
             ** Auto Answering ** 
@@ -326,20 +326,23 @@ def delete_acount(c,m):
     bot.send(DeleteAccount('bye'))
 
 @bot.on_message( filters.me & filters.command(['leavingmembers']))
-def Leaving_people(c,m):
+async def Leaving_people(c,m):
     send_file=''
     num=1
-    for i in bot.get_chat_event_log(chat_id=message.chat.id ,filters =ChatEventFilter(leaving_members=True)):
+    async for i in bot.get_chat_event_log(chat_id=int(m.chat.id) ,filters =ChatEventFilter(leaving_members=True)):
         try:
-            send_file+=f'{num}-{i.user.mention} ``` {i.user.id} ``` '
+            send_file+=f'✦ {i.user.id}⚠️  {i.user.mention}⭕️  \n \n'
             num+=1
         except:
             pass
-            if num==20:
-                m.reply_text(send_file)
-                send_file=''
+        if num==20:
+            num=1
+            fic=hash_set(int((m.chat.id)) , str(send_file))
+            await m.reply_text(send_file)
+            send_file=''
+            await asyncio.sleep(1)
 
-
+#------------------------------------------login_mode
 
 @bot.on_message( filters.me & filters.command(['login']))
 def Anti_Login_func(c,m):
