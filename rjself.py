@@ -960,16 +960,16 @@ def New_Msg(c,m):
 
 @bot.on_message(~filters.me & filters.private)
 def New_Private_MSG(c,m):
-    # Msg_Id= bot.get_history_count(m.chat.id)
-    # Unread_Count=0
-    # Mentions_Count=0
-    # Unread_Users_Count=0
-    # for i in bot.iter_dialogs(offset_date=0):
-    #     Mentions_Count+=int(i.unread_mentions_count)
-    #     if i.chat.type=='private' :
-    #         Unread_Count+=int(i.unread_message_count)
-    #         if i.unread_mark==True:
-    #             Unread_Users_Count+=1
+    Msg_Id= bot.get_history_count(m.chat.id)
+    Unread_Count=0
+    Mentions_Count=0
+    Unread_Users_Count=0
+    for i in bot.iter_dialogs(offset_date=0):
+        Mentions_Count+=int(i.unread_mentions_count)
+        if i.chat.type=='private' :
+            Unread_Count+=int(i.unread_message_count)
+            if i.unread_mark==True:
+                Unread_Users_Count+=1
 
     q=1
     if safe_blk==1:
@@ -992,7 +992,7 @@ def New_Private_MSG(c,m):
                 q=0
         else:
             if m.from_user.id not in safe_list:
-                #id=bot.send(InputPeerUser(m.from_user.id,access_hash=)))
+                # id=bot.send(InputPeerUser(m.from_user.id,access_hash=)))
                 id= bot.resolve_peer(m.from_user.id)
                 bot.send(DeleteHistory(max_id=0,peer=id,revoke=True))
                 q=0
@@ -1005,12 +1005,12 @@ def New_Private_MSG(c,m):
             if m.from_user.id not in safe_list:
                 m.delete(True)
                 q=0
-    # if q==1:
-    #     answer(c,m)
-    #     if offline==True:
-    #         if m.from_user.id not in Has_Sended:
-    #             I=m.ryply_text(f'{Offline_text} \n| i have {Unread_Count} new messages & {Unread_Users_Count} users waiting for my respond & {Mentions_Count} mentions  so wait for my respond... ')
-    #             Has_Sended.append(I.message_id)
+    if q==1:
+        answer(c,m)
+        if offline==True:
+            if m.from_user.id not in Has_Sended:
+                I=m.ryply_text(f'{Offline_text} \n| i have {Unread_Count} new messages & {Unread_Users_Count} users waiting for my respond & {Mentions_Count} mentions  so wait for my respond... ')
+                Has_Sended.append(I.message_id)
 
 
 @bot.on_message(filters.me & filters.text)
