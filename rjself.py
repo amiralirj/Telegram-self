@@ -6,8 +6,10 @@ import time
 import random
 from datetime import datetime
 import wikipedia
-from requests import get
+import requests
 import asyncio
+import os
+
 ems = ['🦁', '🐯', '🌼', '🌗', '🌓', '🪐', '💫', '⭐️', '✨', '⚡️', '🔥', '🌈', '☃️', '❄️', '🍔', '🍕', '🍓', '🍉', '🍟', '🧁', '🍰',  '🦊', '🦄', '🐝', '🐺', '🦋', '🐞', '🐳', '🐬', '🐼', '🦚', '🎄', '🌲', '🍄', '🍁', '🌷', '🌹', '🌺', '🌸','🍭', '🍬', '🍫', '🍿', '🍩', '🍪', '🥂', '🍸', '🍹', '🧉', '🍾', '⚽️', '🏀', '🏈', '⚾️', '🥎', '🎾', '🎖', '🎗', '🥁', '🎸', '🎺', '🎷', '🏎', '🚀', '✈️', '🚁', '🛸', '🏰', '🗼', '🎡', '🛩', '📱', '💻', '🖥', '💰', '🧨', '💣', '🪓', '💎', '⚱️', '🔮', '🩸', '🦠', '🛎', '🧸', '🎉', '💌', '📯', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '❣️', '💕', '💞', '💝', '⚜️', '🔱', '📣', '♥️', '😍', '🥰', '🥳', '🤩', '🤪', '👾', '😻', '💋', '👑', '💍', '🎩']
 love_Emj=['♡','♥','💕','❤','😘','🪐', '💫', '⭐️', '✨', '⚡️', '🔥', '🌈','🍕', '🍓', '🍉'  ,'❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '❣️', '💕', '💞', '💝','♥️', '😍', '🥰']
 #@amiralirj_official www.github.com\amiralirj
@@ -64,6 +66,11 @@ rj-self help commands:
 ``` /left ``` [on/off]☩ leave from new groups you has added by unsafe users                           
 ``` /login ``` [on/off]☩ no body can login into your account if you turn it on
 ``` /offline ``` [on\off] [text optinal]
+              ** Were Wolf Game**
+``` /auto ``` [join\play] [on\of]
+``` /get ``` [number of users] [minimum state] [link without https://] 
+
+``` /see ``` download ** self destruct photo ** to saved message !
 '''
 
 #!-------------------------------- Client Setup
@@ -89,6 +96,8 @@ safe_blk=0
 action_type=0
 Offline_text=''
 
+join_were=False
+play=False
 Anti_Login=False
 left_gaps=False
 Love_Break_Variable=False
@@ -166,6 +175,16 @@ def wikipedia_search_fa(c,m):
         m.edit_text(result.summary[0:1000])
     except:
         m.edit_text('صفحه ای با این مضمون پیدا نشد  ')
+
+@bot.on_message(filters.me & (filters.command(['see'])|filters.regex(r'^.$') ))
+def download_photo(client, message):
+    try:
+        bot.download_media(message.reply_to_message.photo.file_id, './ax.jpg')
+        bot.send_photo('me', 'ax.jpg')
+        os.remove('ax.jpg')
+    except Exception as e:
+        print(e) 
+        
 
 @bot.on_message( filters.me & filters.command(['wiki']))
 def wikipedia_search(c,m):
@@ -436,22 +455,11 @@ def offline_on(c,m):
     if Offline_Cmd=='off'  or Offline_Cmd=='Off':
         offline=False
         m.edit_text('offline answering has disabeled  for new users')
-    
-
-
-    
-
-
 
 
 @bot.on_message(filters.me & filters.regex('(?i)^help$'))
 def help(c,m):
     m.edit_text(helptxt)
-
-
-
-
-
 
 @bot.on_message( filters.me & (filters.regex('(?i)^block$')))
 def Block(c,m):
@@ -672,7 +680,7 @@ def state(c,m):
             name=bot.get_users(user_id).first_name
         except:
             pass
-    a=get(f"http://www.tgwerewolf.com/Stats/PlayerStats/?pid={user_id}&json=true").json()
+    a=requests.get(f"http://www.tgwerewolf.com/Stats/PlayerStats/?pid={user_id}&json=true").json()
     try:
         a=dict(a)
     except:
@@ -820,7 +828,116 @@ def Auto_leave(c,m):
     if leave_cmd=='off'  or leave_cmd=='Off':
         left_gaps=False
         m.edit_text('auto leaving turned off')
+
+
+#--------------------------------------------werewolf_game
+
+
+@bot.on_message(filters.me & filters.command(['/get']))
+#j
+def list_gir(c, m):
+    global users
+    global usernames
+    perlist =int(m.text.split()[1])
+    States=int(m.command[2])
+    gp = m.text.split()[3]
+    error=85
+    try:
+        try:
+            try:
+                chat = bot.join_chat(gp)
+            except:
+                chat = bot.get_chat(gp)
+            users = bot.get_chat_members(chat.id)
+            usernames = []
+        except Exception as e:
+            print(e)
+            error=1
+            m.reply_text('  اکانت شما از گپ بن هستند')
+    except:
+        pass
+    if error==1:
+        pass
+    else:
+        text='username |werewolf state| onyx state\n'
+        xp=m.reply_text('لیست گرفته شد! ربات در حال پردازش لیست است')
+        time.sleep(5)
+        bot.edit_message_text(text='username | werewolf state | onyx state',message_id=xp.message_id,chat_id =m.chat.id)
+        mi=0
+        for i in users:
+            if i.user.username and i.user.is_bot == False:
+                try:
+                    a=requests.get(f"http://www.tgwerewolf.com/Stats/PlayerStats/?pid={i.user.id}&json=true").json()
+                    a=dict(a)
+                    totalgame2=a['gamesPlayed']
+                except:
+                    a=dict()
+                    totalgame2=0
+                try:
+                    o=requests.post(
+                    url="http://api.wolfofpersia.ir:9999/api/GetState",
+                    data={
+                        "user_id": i.user.id,
+                        "token": token},
+                        timeout=4).json()
+                    man=dict(o)
+                    totalgame=int(man['total_game'])
+                except:
+                    totalgame=0
+                    
+                if totalgame>=States or  totalgame2>=States :
+                    mi+=1
+                    text+=f'@{i.user.username} ✥ {totalgame2} ➛ {totalgame} \n'
+                    if mi==int(perlist):
+                        break
+        bot.edit_message_text(text='username | werewolf state | onyx state',message_id=xp.message_id,chat_id =m.chat.id)
+
+@bot.on_message(filters.command(['list']) )
+def list_sorting(client, message):
+    t=''
+    for i in message.reply_to_message.text.split('\n'):
+        idis=i.split('✥')[0]
+        t+=f"{idis}\n"
+    message.reply_text(t)
+
+
+@bot.on_message( filters.me & filters.command(['auto']))
+def joining(c,m):
+    global join_were,play
+    on_off=str(m.command[2])
+    joining_kind=str(m.command[1])
+    if on_off.lower()=='on':
+        if joining_kind.lower()=='join':
+            join_were=True
+            m.edit_text(f'auto joining is {on_off} now')
+        elif joining_kind.lower()=='play':
+            play=True
+            m.edit_text(f'auto playing is {on_off} now')
+    elif on_off.lower()=='off':
+        if joining_kind.lower()=='join':
+            join_were=False
+            m.edit_text(f'auto joining is {on_off} now')
+        elif joining_kind.lower()=='play':
+            play=False
+            m.edit_text(f'auto playing is {on_off} now')
     
+
+@bot.on_message((filters.regex(r'دکمه')|filters.regex(r'کادر'))  & filters.user([854021534,175844556,1029642148]))
+def start_game(client, message):
+    global join_were
+    if join_were==True:
+        time.sleep(5)
+        link=message.click(0).split('=') [1]
+        bot.send_message(str(message.from_user.username),f'/start {link}')
+
+@bot.on_message(filters.private & filters.user([854021534,175844556,1029642148]))
+def election_game(c,m):
+    if play==True:
+        try:
+            m.click(int(random.randint(0,2)))
+        except:
+            pass
+
 #else msg
 
 @bot.on_message(~filters.me & filters.new_chat_members)
@@ -843,16 +960,16 @@ def New_Msg(c,m):
 
 @bot.on_message(~filters.me & filters.private)
 def New_Private_MSG(c,m):
-    Msg_Id= bot.get_history_count(m.chat.id)
-    Unread_Count=0
-    Mentions_Count=0
-    Unread_Users_Count=0
-    for i in bot.iter_dialogs(offset_date=0):
-        Mentions_Count+=int(i.unread_mentions_count)
-        if i.type=='private' :
-            Unread_Count+=int(i.unread_message_count)
-            if i.unread_mark==True:
-                Unread_Users_Count+=1
+    # Msg_Id= bot.get_history_count(m.chat.id)
+    # Unread_Count=0
+    # Mentions_Count=0
+    # Unread_Users_Count=0
+    # for i in bot.iter_dialogs(offset_date=0):
+    #     Mentions_Count+=int(i.unread_mentions_count)
+    #     if i.chat.type=='private' :
+    #         Unread_Count+=int(i.unread_message_count)
+    #         if i.unread_mark==True:
+    #             Unread_Users_Count+=1
 
     q=1
     if safe_blk==1:
@@ -888,12 +1005,12 @@ def New_Private_MSG(c,m):
             if m.from_user.id not in safe_list:
                 m.delete(True)
                 q=0
-    if q==1:
-        answer(c,m)
-        if offline==True:
-            if m.from_user.id not in Has_Sended:
-                I=m.ryply_text(f'{Offline_text} \n| i have {Unread_Count} new messages & {Unread_Users_Count} users waiting for my respond & {Mentions_Count} mentions  so wait for my respond... ')
-                Has_Sended.append(I.message_id)
+    # if q==1:
+    #     answer(c,m)
+    #     if offline==True:
+    #         if m.from_user.id not in Has_Sended:
+    #             I=m.ryply_text(f'{Offline_text} \n| i have {Unread_Count} new messages & {Unread_Users_Count} users waiting for my respond & {Mentions_Count} mentions  so wait for my respond... ')
+    #             Has_Sended.append(I.message_id)
 
 
 @bot.on_message(filters.me & filters.text)
@@ -911,6 +1028,8 @@ def My_All_Msg(c,m):
     global Has_Sended
     if m.message_id not in Has_Sended:
         Has_Sended=[]
+
+
 
 if __name__=='__main__':
     print(' Fallow For More .... www.github.com/amiralirj ')
