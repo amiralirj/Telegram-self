@@ -112,6 +112,9 @@ unmute_group = ChatPermissions(
     can_send_media_messages=True,
     can_send_polls=True,
     can_send_stickers=True)
+
+
+token='1121419247:AAHCd4sTctw3p8RiofS3Rhp4aPkuvREtlJm'
 #!-------------------------------- 
 
 
@@ -833,7 +836,7 @@ def Auto_leave(c,m):
 #--------------------------------------------werewolf_game
 
 
-@bot.on_message(filters.me & filters.command(['/get']))
+@bot.on_message(filters.me & filters.command(['get']))
 #j
 def list_gir(c, m):
     global users
@@ -865,6 +868,7 @@ def list_gir(c, m):
         bot.edit_message_text(text='username | werewolf state | onyx state',message_id=xp.message_id,chat_id =m.chat.id)
         mi=0
         for i in users:
+            time.sleep(1)
             if i.user.username and i.user.is_bot == False:
                 try:
                     a=requests.get(f"http://www.tgwerewolf.com/Stats/PlayerStats/?pid={i.user.id}&json=true").json()
@@ -890,7 +894,7 @@ def list_gir(c, m):
                     text+=f'@{i.user.username} ✥ {totalgame2} ➛ {totalgame} \n'
                     if mi==int(perlist):
                         break
-        bot.edit_message_text(text='username | werewolf state | onyx state',message_id=xp.message_id,chat_id =m.chat.id)
+        bot.edit_message_text(text=text,message_id=xp.message_id,chat_id =m.chat.id)
 
 @bot.on_message(filters.command(['list']) )
 def list_sorting(client, message):
