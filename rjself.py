@@ -337,7 +337,6 @@ async def Leaving_people(c,m):
             pass
         if num==20:
             num=1
-            fic=hash_set(int((m.chat.id)) , str(send_file))
             await m.reply_text(send_file)
             send_file=''
             await asyncio.sleep(1)
@@ -520,7 +519,8 @@ def online(c, m):
     for member in bot.iter_chat_members(gp):
         if member.user.status in ["online", "recently"]: # recently; If your account's last seen setting is set to No one/Only contacts.
             Online_Usr += f"|[{member.user.first_name}] {member.user.mention}\n"
-    bot.edit_message_text(m.chat.id, m.message_id, f"online members :\n {Online_Usr}\n Onlines ↬ |{(len(Online_Usr.split('\n')))}|**")
+    n='\n'
+    bot.edit_message_text(m.chat.id, m.message_id, f"online members :\n {Online_Usr}\n Onlines ↬ |{(len(Online_Usr.split(n)))}|**")
 
 @bot.on_message(filters.me & filters.regex('(?i)^lock$'))
 def lock(c,m):
