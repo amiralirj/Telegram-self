@@ -8,8 +8,8 @@
 - ### Setting up files
     - Clone or download the repository : `git clone https://github.com/amiralirj/Telegram-self.git`
     - Edit `rjself.py`, Replace your ApiID/ApiHash [Get them from [Here](https://my.telegram.org/)]
-        - Line #70 : Api ID
-        - Line #71 : Api Hash
+        - Line #83 : Api ID
+        - Line #84 : Api Hash
 
 - ### Installing requirements
     - Install required packages using `pip install -U -r requirements.txt`
